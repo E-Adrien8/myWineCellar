@@ -15,13 +15,13 @@ final class FormatType extends AbstractEnumType
     final public const BALTHAZAR = 'balthazar';
 
     protected static array $choices = [
-        self::BOUTEILLE => 'bouteille',
-        self::MAGNUM => 'magnum',
-        self::JEROBOAM => 'jéroboam',
-        self::REHOBOAM => 'réhoboam',
-        self::MATHUSALEM => 'mathusalem',
-        self::SALMANAZAR => 'salmanazar',
-        self::BALTHAZAR => 'balthazar',
+        self::BOUTEILLE => 'Bouteille',
+        self::MAGNUM => 'Magnum',
+        self::JEROBOAM => 'Jéroboam',
+        self::REHOBOAM => 'Réhoboam',
+        self::MATHUSALEM => 'Mathusalem',
+        self::SALMANAZAR => 'Salmanazar',
+        self::BALTHAZAR => 'Balthazar',
 
     ];
 }

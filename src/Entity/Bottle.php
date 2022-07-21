@@ -2,8 +2,13 @@
 
 namespace App\Entity;
 
+use App\DBAL\Types\AppelationType;
+use App\DBAL\Types\ColorType;
+use App\DBAL\Types\FormatType;
+use App\DBAL\Types\RegionType;
 use App\Repository\BottleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 
 #[ORM\Entity(repositoryClass: BottleRepository::class)]
 class Bottle
@@ -14,13 +19,19 @@ class Bottle
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $shelf = null;
+    #[ORM\ManyToOne(targetEntity: Shelf::class, inversedBy: 'bottles')]
+    private Shelf $shelf;
 
-    #[ORM\Column]
-    private ?int $appelation = null;
+    #[ORM\Column(type: 'AppelationType')]
+    #[DoctrineAssert\EnumType(entity: AppelationType::class)]
+    private string $appelation;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $country = null;
+    #[ORM\Column(type: 'RegionType')]
+    #[DoctrineAssert\EnumType(entity: RegionType::class)]
+    private string $region;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $country = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
@@ -34,40 +45,31 @@ class Bottle
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?int $color = null;
+    #[ORM\Column(type: 'ColorType')]
+    #[DoctrineAssert\EnumType(entity: ColorType::class)]
+    private string $color;
 
-    #[ORM\Column(length: 255)]
-    private ?string $format = null;
+    #[ORM\Column(type: 'FormatType')]
+    #[DoctrineAssert\EnumType(entity: FormatType::class)]
+    private string $format;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getShelf(): ?int
+    public function getShelf(): ?Shelf
     {
         return $this->shelf;
     }
 
-    public function setShelf(int $shelf): self
+    public function setShelf(?Shelf $shelf): self
     {
         $this->shelf = $shelf;
 
         return $this;
     }
 
-    public function getAppelation(): ?int
-    {
-        return $this->appelation;
-    }
-
-    public function setAppelation(int $appelation): self
-    {
-        $this->appelation = $appelation;
-
-        return $this;
-    }
 
     public function getCountry(): ?int
     {
@@ -129,27 +131,48 @@ class Bottle
         return $this;
     }
 
-    public function getColor(): ?int
+    public function getAppelation(): string
+    {
+        return $this->appelation;
+    }
+
+    public function setAppelation(string $appelation): void
+    {
+        AppelationType::assertValidChoice($appelation);
+        $this->appelation = $appelation;
+    }
+
+    public function getRegion(): string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(string $region): void
+    {
+        RegionType::assertValidChoice($region);
+        $this->region = $region;
+    }
+
+    public function getColor(): string
     {
         return $this->color;
     }
 
-    public function setColor(int $color): self
+    public function setColor(string $color): void
     {
+        ColorType::assertValidChoice($color);
         $this->color = $color;
-
-        return $this;
     }
 
-    public function getFormat(): ?string
+    public function getFormat(): string
     {
         return $this->format;
     }
 
-    public function setFormat(string $format): self
+    public function setFormat(string $format): void
     {
+        FormatType::assertValidChoice($format);
         $this->format = $format;
-
-        return $this;
     }
+
 }

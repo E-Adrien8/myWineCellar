@@ -1,5 +1,11 @@
 doctrine:
     dbal:
+        types:
+            FormatType: App\DBAL\Types\FormatType
+            ColorType: App\DBAL\Types\ColorType
+            AppelationType: App\DBAL\Types\AppelationType
+            RegionType: App\DBAL\Types\RegionType
+
         url: '%env(resolve:DATABASE_URL)%'
 
         # IMPORTANT: You MUST configure your server version,

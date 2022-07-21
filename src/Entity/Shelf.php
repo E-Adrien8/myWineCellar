@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ShelfRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ShelfRepository::class)]
 class Shelf
@@ -16,8 +18,13 @@ class Shelf
     #[ORM\Column]
     private ?int $user = null;
 
-    #[ORM\Column]
-    private ?int $bottle = null;
+    #[ORM\OneToMany(mappedBy: 'shelf', targetEntity: Bottle::class)]
+    private Collection $bottles;
+
+    public function __construct()
+    {
+        $this->bottles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -36,15 +43,31 @@ class Shelf
         return $this;
     }
 
-    public function getBottle(): ?int
+    public function getBottles(): Collection
     {
-        return $this->bottle;
+        return $this->bottles;
     }
 
-    public function setBottle(int $bottle): self
+    public function addBottles(Bottle $bottle): self
     {
-        $this->bottle = $bottle;
+        if (!$this->bottles->contains($bottle)) {
+            $this->bottles[] = $bottle;
+            $bottle->setShelf($this);
+        }
 
         return $this;
     }
+    public function removeBottle(Bottle $bottle): self
+    {
+        if ($this->bottles->removeElement($bottle)) {
+            // set the owning side to null (unless already changed)
+            if ($bottle->getShelf() === $this) {
+                $bottle->setShelf(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }
